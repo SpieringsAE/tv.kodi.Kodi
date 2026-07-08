@@ -1,6 +1,6 @@
 app-id: tv.kodi.Kodi
 runtime: org.freedesktop.Platform
-runtime-version: '25.08'
+runtime-version: '26.08beta'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.openjdk17
@@ -83,6 +83,8 @@ modules:
       - --enable-libdrm
       - --enable-hwaccels
       - --disable-doc
+      - --enable-libudev
+      - --enable-v4l2-request
     build-options:
       arch:
         x86_64:
@@ -95,19 +97,25 @@ modules:
       - /bin
     sources:
       - type: archive
-        url: https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n8.1.2.tar.gz
-        sha512: c72f4062aecc16d8b2b1e8678d5efe3af4cfaa0cc7c0997052248f9e499e60c2463acf07877cf3b78b246ce3e8078cb043e8d97e90a6b50d06af32ff7369a788
+        url: http://ffmpeg.org/releases/ffmpeg-8.1.2.tar.xz
+        sha512: b3adc16fe426217bb607da01c4137cee0a9788fc08e077874336db185d2b7287746a7dc94cf0181ea92cd8afcdb06094ee9456e2986112354f84538cb9a5ed0b
         x-checker-data:
           type: anitya
           project-id: 5405
-          url-template: https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n$version.tar.gz
-      - type: file
-        url: https://raw.githubusercontent.com/xbmc/xbmc/c4913a2c601c44b44ce24b7f8decb981adedccdf/tools/depends/target/ffmpeg/001-ffmpeg-all-libpostproc-plugin.patch
-        sha256: ef4db98503c1303c9240fc4774d338c8460979c9948391cb6f0c5b27f512508b
-        dest-filename: 001-ffmpeg-all-libpostproc-plugin.patch
+          url-template: http://ffmpeg.org/releases/ffmpeg-$version.tar.xz
+      - type: patch
+        path: patches/ffmpeg/0001-postproc.patch
+      - type: patch
+        path: patches/ffmpeg/0001-libreelec.patch
+      - type: patch
+        path: patches/ffmpeg/0001-v4l2-request.patch
+      - type: patch
+        path: patches/ffmpeg/0001-wip-hevc-Add-support-for-sps-st-rps-control.patch
+      - type: patch
+        path: patches/ffmpeg/0001-v4l2-drmprime.patch
+      - type: patch
+        path: patches/ffmpeg/0001-vf-deinterlace-v4l2m2m.patch
       - type: shell
-        commands:
-          - patch -p1 < 001-ffmpeg-all-libpostproc-plugin.patch
   - name: flatbuffers
     buildsystem: cmake-ninja
     config-opts:
